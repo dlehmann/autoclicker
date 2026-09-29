@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Autoclicker
+Name[de]=Autoklicker
+GenericName=Autoclicker
+GenericName[de]=Autoklicker
+Comment=Automatically clicks on a selected spot on the screen
+Comment[de]=Klickt automatisch auf eine gewählte Stelle des Bildschirms
+Exec=autoclicker
+Icon=autoclicker
+Terminal=false
+Categories=Utility;
+Keywords=click;mouse;automation;autoclicker;
+Keywords[de]=Klick;Maus;Automatisierung;Autoklicker;

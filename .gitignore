@@ -1,0 +1,30 @@
+# Build directories
+build/
+build-*/
+*.AppImage
+cmake-build-*/
+out/
+
+# CMake leftovers from in-source builds
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+Makefile
+*_autogen/
+
+# Build output
+*.o
+*.a
+*.so
+/autoclicker
+
+# Editors and IDEs
+.vscode/
+.idea/
+.cache/
+*.user
+*.swp
+*~
+.kdev4/
+*.kdev4

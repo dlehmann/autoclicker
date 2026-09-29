@@ -1,0 +1,74 @@
+name: Release
+
+# Builds an AppImage and publishes it as a GitHub release whenever a tag with a
+# version number is pushed, e.g. v1.0.0 or 1.2.3. Tags with a suffix
+# (v1.0.0-rc1) are published as pre-releases.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+      - '[0-9]+.[0-9]+.[0-9]+*'
+
+permissions:
+  contents: write
+
+jobs:
+  appimage:
+    runs-on: ubuntu-latest
+    # Debian 13 ships Qt 6.8 and LayerShellQt for Qt 6; its glibc version
+    # (2.41) determines the minimum systems the AppImage runs on.
+    container: debian:trixie
+    steps:
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential cmake git file wget ca-certificates \
+            qt6-base-dev qt6-base-private-dev qt6-wayland \
+            qt6-tools-dev qt6-l10n-tools qt6-translations-l10n \
+            liblayershellqtinterface-dev layer-shell-qt libgl-dev
+
+      - uses: actions/checkout@v4
+
+      - name: Build AppImage
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}" packaging/build-appimage.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: appimage
+          path: Autoclicker-*.AppImage
+          if-no-files-found: error
+
+  release:
+    needs: appimage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: appimage
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="$GITHUB_REF_NAME"
+          title="Autoclicker $tag"
+          export GH_REPO="$GITHUB_REPOSITORY"
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            # The tag was pushed again: replace the title and all assets
+            gh release edit "$tag" --title "$title"
+            gh release view "$tag" --json assets --jq '.assets[].name' |
+              while read -r asset; do
+                gh release delete-asset "$tag" "$asset" --yes
+              done
+            gh release upload "$tag" Autoclicker-*.AppImage
+          else
+            extra=()
+            [[ "$tag" == *-* ]] && extra+=(--prerelease)
+            gh release create "$tag" Autoclicker-*.AppImage \
+              --title "$title" \
+              --generate-notes \
+              "${extra[@]}"
+          fi

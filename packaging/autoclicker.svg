@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect x="8" y="8" width="240" height="240" rx="48" fill="#1d6fd8"/>
+  <!-- Click lines -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="12" opacity="0.85">
+    <path d="M70 58 L58 34"/>
+    <path d="M46 84 L20 76"/>
+    <path d="M96 48 L100 22"/>
+    <path d="M44 112 L22 124"/>
+  </g>
+  <!-- Mouse pointer -->
+  <path d="M84 76 L84 214 L118 180 L142 232 L168 220 L144 170 L192 168 Z"
+        fill="#ffffff" stroke="#0b2f5e" stroke-width="8" stroke-linejoin="round"/>
+</svg>
